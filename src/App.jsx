@@ -3,7 +3,7 @@ import { useState, useEffect } from 'react'
 function App() {
   const [todos, setTodos] = useState([])
   const [nuovoTitolo, setNuovoTitolo] = useState('')
-  
+
   useEffect(() => {
     const caricaTodos = async () => {
       try {
@@ -45,6 +45,25 @@ function App() {
     }
   }
 
+  const toggleCompletato = async (todo) => {
+    try {
+      const res = await fetch(`http://localhost:8080/todos/${todo.id}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ completato: !todo.completato })
+      })
+
+      if (!res.ok) {
+        throw new Error(`Errore HTTP: ${res.status}`)
+      }
+
+      const todoAggiornato = await res.json()
+      setTodos(todos.map(t => (t.id === todoAggiornato.id ? todoAggiornato : t)))
+    } catch (errore) {
+      console.error('Errore nell\'aggiornamento del todo:', errore)
+    }
+  }
+
   return (
     <div className="container py-5" style={{ maxWidth: '600px' }}>
       <h1 className="mb-4">La mia Todo List</h1>
@@ -68,7 +87,20 @@ function App() {
             key={todo.id}
             className="list-group-item d-flex justify-content-between align-items-center"
           >
-            {todo.titolo}
+            <div className="form-check">
+              <input
+                type="checkbox"
+                className="form-check-input"
+                checked={todo.completato}
+                onChange={() => toggleCompletato(todo)}
+              />
+              <label
+                className="form-check-label"
+                style={{ textDecoration: todo.completato ? 'line-through' : 'none' }}
+              >
+                {todo.titolo}
+              </label>
+            </div>
           </li>
         ))}
       </ul>
