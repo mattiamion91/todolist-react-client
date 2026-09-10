@@ -64,6 +64,22 @@ function App() {
     }
   }
 
+    const eliminaTodo = async (id) => {
+    try {
+      const res = await fetch(`http://localhost:8080/todos/${id}`, {
+        method: 'DELETE'
+      })
+
+      if (!res.ok) {
+        throw new Error(`Errore HTTP: ${res.status}`)
+      }
+
+      setTodos(todos.filter(t => t.id !== id))
+    } catch (errore) {
+      console.error('Errore nell\'eliminazione del todo:', errore)
+    }
+  }
+
   return (
     <div className="container py-5" style={{ maxWidth: '600px' }}>
       <h1 className="mb-4">La mia Todo List</h1>
@@ -101,6 +117,13 @@ function App() {
                 {todo.titolo}
               </label>
             </div>
+
+            <button
+              className="btn btn-sm btn-outline-danger"
+              onClick={() => eliminaTodo(todo.id)}
+            >
+              Elimina
+            </button>
           </li>
         ))}
       </ul>
