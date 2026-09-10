@@ -7,7 +7,7 @@ function App() {
   useEffect(() => {
     const caricaTodos = async () => {
       try {
-        const res = await fetch('http://localhost:8080/todos')
+        const res = await fetch(`${import.meta.env.VITE_API_URL}/todos`)
         if (!res.ok) {
           throw new Error(`Errore HTTP: ${res.status}`)
         }
@@ -27,7 +27,7 @@ function App() {
     if (nuovoTitolo.trim() === '') return
 
     try {
-      const res = await fetch('http://localhost:8080/todos', {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/todos`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ titolo: nuovoTitolo, completato: false })
@@ -47,7 +47,7 @@ function App() {
 
   const toggleCompletato = async (todo) => {
     try {
-      const res = await fetch(`http://localhost:8080/todos/${todo.id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/todos/${todo.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ completato: !todo.completato })
@@ -66,7 +66,7 @@ function App() {
 
     const eliminaTodo = async (id) => {
     try {
-      const res = await fetch(`http://localhost:8080/todos/${id}`, {
+      const res = await fetch(`${import.meta.env.VITE_API_URL}/todos/${id}`, {
         method: 'DELETE'
       })
 
