@@ -3,6 +3,7 @@ import { useState, useEffect } from 'react'
 function App() {
   const [todos, setTodos] = useState([])
   const [nuovoTitolo, setNuovoTitolo] = useState('')
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     const caricaTodos = async () => {
@@ -15,6 +16,8 @@ function App() {
         setTodos(data)
       } catch (errore) {
         console.error('Errore nel caricamento dei todo:', errore)
+      } finally {
+        setIsLoading(false)
       }
     }
 
@@ -64,7 +67,7 @@ function App() {
     }
   }
 
-    const eliminaTodo = async (id) => {
+  const eliminaTodo = async (id) => {
     try {
       const res = await fetch(`${import.meta.env.VITE_API_URL}/todos/${id}`, {
         method: 'DELETE'
@@ -83,6 +86,13 @@ function App() {
   return (
     <div className="container py-5" style={{ maxWidth: '600px' }}>
       <h1 className="mb-4">La mia Todo List</h1>
+
+      {isLoading &&
+        (<div className="alert alert-info py-2 px-3 small mb-4">
+          ⏳ Il backend è ospitato su un piano gratuito: se è la prima visita da un po',
+          il caricamento iniziale può richiedere 30-40 secondi. Dai tempo alla lista di apparire!
+        </div>
+        )}
 
       <form onSubmit={handleSubmit} className="d-flex gap-2 mb-4">
         <input
